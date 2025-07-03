@@ -1,0 +1,94 @@
+{% extends "admin/change_form.html" %}
+
+{% load i18n admin_urls humanize %}
+
+{% block object-tools-items %}
+    {% if original.pk %}
+        <li>
+            <a class="view-parent-object" href="{% url 'admin:concordia_campaign_change' original.item.project.campaign_id %}">
+                Campaign
+            </a>
+        </li>
+        <li>
+            <a class="view-parent-object" href="{% url 'admin:concordia_project_change' original.item.project_id %}">
+                Project
+            </a>
+        </li>
+        <li>
+            <a class="view-parent-object" href="{% url 'admin:concordia_item_change' original.item_id %}">
+                Item
+            </a>
+        </li>
+        <li>
+            <a class="view-related-objects" href="{% url 'admin:concordia_transcription_changelist' %}?asset__id__exact={{ original.pk }}">
+                Transcriptions
+            </a>
+        </li>
+    {% endif %}
+    {{ block.super }}
+{% endblock object-tools-items %}
+
+{% block content %}
+    {% if original %}
+        <form action="{% url 'admin:concordia_asset_changelist' %}" method="post" style="display:inline;">
+            {% csrf_token %}
+
+            {# Manually create the hidden PK field #}
+            <input type="hidden" name="_selected_action" value="{{ original.pk }}"></input>
+
+            {# We use this to send the user back to this page instead of leaving them on the changelist #}
+            <input type="hidden" name="next" value="{% url 'admin:concordia_asset_change' original.pk %}"></input>
+
+            {{ status_action_form.action }}
+            <button type="submit" class="button">Change status</button>
+        </form>
+    {% endif %}
+
+    <h4>Current status: {{ original.get_transcription_status_display }}</h4>
+
+    {{ block.super }}
+
+    <h4>Current status: {{ original.transcription_status }}</h4>
+
+    {% if transcriptions %}
+        <table>
+            <caption>Transcription History</caption>
+            <thead>
+                <tr>
+                    <th>ID</th>
+                    <th>Creator</th>
+                    <th>Created</th>
+                    <th>Updated</th>
+                    <th>Submitted</th>
+                    <th>Review Status</th>
+                </tr>
+            </thead>
+            <tbody>
+                {% for t in transcriptions %}
+                    <tr>
+                        <th><a href="{% url 'admin:concordia_transcription_change' t.id %}">{{ t.id }}</a></th>
+                        <th>{{ t.user }}</th>
+                        <td>{{ t.created_on|naturaltime }}</td>
+                        <td>{{ t.updated_on|naturaltime }}</td>
+                        <td>{{ t.submitted|naturaltime|default:'' }}</td>
+                        <td>
+                            {% if t.rejected %}
+                                Rejected
+                            {% elif t.accepted %}
+                                Accepted
+                            {% endif %}
+                            {% if t.rejected or t.accepted %}
+                                by {{ t.reviewed_by }}
+                            {% endif %}
+                            {% if t.rejected %}
+                                {{ t.rejected|naturaltime }}
+                            {% elif t.accepted %}
+                                {{ t.accepted|naturaltime }}
+                            {% endif %}
+                        </td>
+                    </tr>
+                {% endfor %}
+            </tbody>
+        </table>
+    {% endif %}
+{% endblock content %}

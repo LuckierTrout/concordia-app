@@ -1,0 +1,98 @@
+{% extends "base.html" %}
+
+{% load staticfiles %}
+
+{% block title %}Active Campaigns{% endblock title %}
+
+{% block head_content %}
+    <link rel="canonical" href="https://{{ request.get_host }}{{ request.path }}">
+    {{ block.super }}
+{% endblock head_content %}
+
+{% block breadcrumbs %}
+    <li class="breadcrumb-item active" aria-current="page">All Campaigns</li>
+{% endblock breadcrumbs %}
+
+{% block main_content %}
+    <div class="container py-3">
+        <h1>All Campaigns</h1>
+        {% if topics %}
+            <div>
+                <h2 class="h5">Explore by topic</h2>
+                <ul class="list-inline">
+                    {% for topic in topics %}
+                        <li class="list-inline-item my-1 ">
+                            <a class="btn btn-outline-primary" href="{% url 'topic-detail' topic.slug %}">
+                                {{ topic.title }}
+                            </a>
+                        </li>
+                    {% endfor %}
+                </ul>
+            </div>
+        {% endif %}
+        <h2 class="p-2">Active Campaigns</h2>
+        <ul id="campaign-list" class="list-unstyled">
+            {% for campaign in campaigns %}
+                <li class="p-4 mb-1 bg-light" {% if forloop.counter > 10 %}hidden{% endif %}>
+                    <h3 class="mb-3"><a href="{{ campaign.get_absolute_url }}">{{ campaign.title }}</a></h3>
+                    <div class="row">
+                        <a class="col-md-5 order-md-2" href="{{ campaign.get_absolute_url }}">
+                            <p class="mb-2 text-center"><img src="{{ MEDIA_URL }}{{ campaign.thumbnail_image }}" class="img-fluid" alt="{% if campaign.image_alt_text %}{{ campaign.image_alt_text }}{% else %}{{ campaign.title }} image{% endif %}"></p>
+                        </a>
+                        <div class="col-md">
+                            <p>{{ campaign.short_description|safe }}</p>
+                            <a class="btn btn-primary" href="{{ campaign.get_absolute_url }}">View Projects</a>
+                            <div class="progress campaign-progress">
+                                <div
+                                    class="progress-bar bg-completed"
+                                    role="progressbar"
+                                    style="width: {{ campaign.completed_percent|floatformat:'0' }}%"
+                                    aria-valuenow="{{ campaign.completed_percent|floatformat:'0' }}"
+                                ></div>
+                                <div
+                                    class="progress-bar bg-submitted"
+                                    role="progressbar"
+                                    style="width: {{ campaign.needs_review_percent|floatformat:'0' }}%"
+                                    aria-valuenow="{{ campaign.needs_review_percent|floatformat:'0' }}"
+                                ></div>
+                            </div>
+                            <div class="progress-bar-label">
+                                {% if campaign.completed_percent %}
+                                    <span>{{ campaign.completed_percent|floatformat:'0' }}% Completed</span>
+                                    {% if campaign.needs_review_percent %} | {%endif %}
+                                {% endif %}
+                                {% if campaign.needs_review_percent %}
+                                    <span>{{ campaign.needs_review_percent|floatformat:'0' }}% Needs Review</span>
+                                {% endif %}
+                            </div>
+                        </div>
+                    </div>
+                </li>
+            {% endfor %}
+        </ul>
+        {% with campaigns|length as campaigns_count %}
+            {% if campaigns_count > 10 %}
+                <div class="align-items-center justify-content-center d-flex">
+                    <a id="show-more" class="btn btn-primary">Show More Campaigns ({{ campaigns_count|add:"-10" }})</a>
+                </div>
+            {% endif %}
+        {% endwith %}
+        {% include "transcriptions/completed_campaigns_section.html" %}
+    </div>
+{% endblock main_content %}
+
+{% block body_scripts %}
+    <script>
+        let showMoreButton = document.getElementById("show-more");
+        let campaignList = document.getElementById("campaign-list");
+        if (showMoreButton){
+            showMoreButton.addEventListener("click", function(event){
+                for (const child of campaignList.children){
+                    child.hidden = false;
+                }
+                showMoreButton.parentElement.hidden = true;
+                event.preventDefault();
+            });
+        }
+    </script>
+{% endblock body_scripts %}

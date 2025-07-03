@@ -1,0 +1,13 @@
+{{ title }}
+Transcription Incidents: 2 or more transcriptions submitted in 1 minute.
+{% for row in transcriptions %}
+    * {{ row.1 }} | {{ row.2 }} || {{ row.3 }}
+{% empty %}
+    No transcriptions fell within the window.
+{% endfor %}
+Review Incidents: 2 or more transcriptions accepted in 1 minute.
+{% for row in reviews %}
+    {{ row.1 }} | {{ row.2 }} | {{ row.3 }}
+{% empty %}
+    No reviews fell within the window.
+{% endfor %}

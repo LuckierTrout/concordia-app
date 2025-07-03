@@ -1,0 +1,29 @@
+{% extends "error.html" %}
+
+{% block full_title %}500 Error{% endblock full_title %}
+
+{% block error_message %}
+    <h1>HTTP 500 Error</h1>
+    <p>
+        The server encountered an unexpected condition which prevented
+        it from fulfilling the request. Our staff have been notified
+        about the failure.
+    </p>
+    <nav>
+        <ul class="nav justify-content-center">
+            {% if request %}
+                <li class="nav-item">
+                    <a
+                        class="nav-link"
+                        href="{{ request.META.HTTP_REFERER }}"
+                    >
+                        &laquo; Go Back
+                    </a>
+                </li>
+            {% endif %}
+            <li class="nav-item">
+                <a class="nav-link" href="/">Go Home &raquo;</a>
+            </li>
+        </ul>
+    </nav>
+{% endblock error_message %}

@@ -1,0 +1,22 @@
+<div class="modal-dialog modal-dialog-centered" role="document">
+    <div class="modal-content">
+        <div class="modal-header d-flex justify-content-end">
+            <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+        </div>
+        <div class="modal-body">
+            <div class="bg-light p-3">
+                <h5 class="modal-title mb-3">Are you sure?</h5>
+                <p>Clicking "Transcribe with OCR" will remove all existing transcription text and replace it with automatically generated text. Use the "Undo" button to restore previous text.</p>
+            </div>
+        </div>
+        <div class="modal-footer">
+            <button type="button" class="btn btn-primary" data-bs-dismiss="modal">Cancel</button>
+            {% if transcription_status == "not_started" or transcription_status == "in_progress" %}
+                <input type="hidden" name="supersedes" value="{{ transcription.pk|default:'' }}" />
+                <a tabindex="0" class="btn btn-link d-inline p-0" role="button" data-bs-placement="top" id="select-language-button">
+                    <span class="underline-link fw-bold">Yes, Select Language</span>
+                </a>
+            {% endif %}
+        </div>
+    </div>
+</div>

@@ -1,0 +1,46 @@
+<div id="tutorial-popup" class="modal" tabindex="-1" role="dialog">
+    <div class="modal-dialog modal-dialog-centered" role="document">
+        <div class="modal-content">
+            <div class="modal-header border-bottom-0 row">
+                <div class="col ps-3">
+                    <h4>Campaign Tips</h4>
+                </div>
+                <div class="col-1" id="close-tutorial">
+                    <a data-bs-dismiss="modal" aria-label="Close">
+                        <span aria-hidden="true">x</span>
+                    </a>
+                </div>
+            </div>
+            <div class="modal-body">
+                <div id="card-carousel" class="carousel slide" data-bs-interval="false">
+                    <div class="carousel-inner">
+                        {% for card in cards %}
+                            <div class="carousel-item pb-4 {% if forloop.first %} active {% endif %}">
+                                <div class="position-static d-flex flex-column justify-content-around">
+                                    {% if card.image %}
+                                        <img src="{{ card.image.url }}"{% if card.image_alt_text %} alt="{{ card.image_alt_text }}"{% endif %}>
+                                    {% endif %}
+                                    {% if card.display_heading %}
+                                        <h5>{{ card.display_heading }}</h5>
+                                    {% endif %}
+                                    <p>{{ card.body_text|safe }}</p>
+                                </div>
+                            </div>
+                        {% endfor %}
+                    </div>
+                    <a id="previous-card" href="#card-carousel" role="button" data-bs-slide="prev">
+                        <strong><u><&nbsp;Back</u></strong>
+                    </a>
+                    <div class="carousel-indicators d-none d-lg-flex">
+                        {% for card in cards %}
+                            <button type="button" data-bs-target="#card-carousel" data-bs-slide-to="{{ forloop.counter0 }}" {% if forloop.first %}class="active" {% endif %}></button>
+                        {% endfor %}
+                    </div>
+                    <a id="next-card" href="#card-carousel" data-bs-slide="next">
+                        <strong><u>Next&nbsp;></u></strong>
+                    </a>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>

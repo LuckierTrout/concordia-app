@@ -1,0 +1,47 @@
+{% load static %}
+
+<link rel="stylesheet" href="{% static 'codemirror/lib/codemirror.css' %}">
+<link rel="stylesheet" href="{% static 'codemirror/addon/lint/lint.css' %}">
+
+<script src="{% static 'codemirror/lib/codemirror.js' %}"></script>
+<script src="{% static 'codemirror/mode/xml/xml.js' %}"></script>
+<script src="{% static 'codemirror/mode/markdown/markdown.js' %}"></script>
+<script src="{% static 'codemirror/addon/lint/html-lint.js' %}"></script>
+
+<script src="{% static 'prettier/standalone.js' %}"></script>
+<script src="{% static 'prettier/parser-html.js' %}"></script>
+<script src="{% static 'prettier/parser-markdown.js' %}"></script>
+
+<script src="{% static 'remarkable/dist/remarkable.min.js' %}"></script>
+
+<script src="{% static 'admin/editor-preview.js' %}"></script>
+
+<style>
+    .form-row.codemirror-with-preview > div {
+        display: flex;
+        width: 100%;
+        flex-wrap: wrap;
+    }
+
+    .form-row.codemirror-with-preview > div > * {
+        overflow-y: auto;
+        box-sizing: border-box;
+        min-height: 500px;
+    }
+
+    .form-row.codemirror-with-preview > div .CodeMirror {
+        min-height: 500px;
+    }
+
+    .form-row.codemirror-with-preview > div > label {
+        flex-basis: 100%;
+        min-height: 0;
+        font-weight: bold;
+        color: #333;
+    }
+
+</style>
+
+<template id="preview-head">{% spaceless %}
+    {% include "fragments/common-stylesheets.html" %}
+{% endspaceless %}</template>

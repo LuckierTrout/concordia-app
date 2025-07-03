@@ -1,0 +1,54 @@
+{% extends "base.html" %}
+{% load staticfiles %}
+
+{% block title %}{{ title }}{% endblock title %}
+
+{% block head_content %}
+    {{ block.super }}
+    <script type="module" src="{% static 'js/about-accordions.js' %}"></script>
+{% endblock head_content %}
+
+{% block breadcrumbs %}
+    {% for link, title in breadcrumbs %}
+        {% if forloop.last %}
+            <li class="breadcrumb-item active" title="{{ title }}">{{ title }}</li>
+        {% else %}
+            <li class="breadcrumb-item"><a class="primary-text" href="{{ link }}" title="{{ title }}">{{ title }}</a></li>
+        {% endif %}
+    {% endfor %}
+{% endblock breadcrumbs %}
+
+{% block main_content %}
+    <div class="container">
+        <div class="row">
+            <div class="col">
+                <h1 class="my-3">{{ title }}</h1>
+
+                <div class="simple-page">
+                    {% if add_navigation %}
+                        <div class="row">
+                            <div class="col-3">
+                                <div class="nav flex-column help-center">
+                                    <h4>Instructions</h4>
+                                    {% for guide in guides %}
+                                        <a class="nav-link{% if guide.page.path == request.path %} active{% endif %}" href="{{ guide.page.path }}">
+                                            {{ guide.title }}
+                                        </a>
+                                    {% endfor %}
+                                    <span lang="es">
+                                        <a class="nav-link" href="/help-center/how-to-transcribe-esp/">Instrucciones en español</a>
+                                    </span>
+                                </div>
+                            </div>
+                            <div class="p-3 col-9">
+                                {{ body|safe }}
+                            </div>
+                        </div>
+                    {% else %}
+                        {{ body|safe }}
+                    {% endif %}
+                </div>
+            </div>
+        </div>
+    </div>
+{% endblock main_content %}

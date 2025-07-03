@@ -1,0 +1,19 @@
+{% extends "admin/change_form.html" %}
+
+{% load i18n admin_urls humanize %}
+
+{% block object-tools-items %}
+    {% if original.pk %}
+        <li>
+            <a class="view-related-objects" href="{% url 'admin:concordia_transcription_changelist' %}?user__id__exact={{ original.pk }}">
+                Transcriptions
+            </a>
+        </li>
+        <li>
+            <a class="view-related-objects" href="{% url 'admin:concordia_transcription_changelist' %}?reviewed_by__id__exact={{ original.pk }}">
+                Reviews
+            </a>
+        </li>
+    {% endif %}
+    {{ block.super }}
+{% endblock object-tools-items %}

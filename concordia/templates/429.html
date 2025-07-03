@@ -1,0 +1,19 @@
+{% extends "error.html" %}
+
+{% block full_title %}429 Error{% endblock full_title %}
+
+{% block error_message %}
+    <h1>HTTP 429: Too Many Requests</h1>
+
+    <p>
+        {% if exception %}
+            {{ exception }}
+        {% else %}
+            {{ error|default:'Please wait a bit, then try again.' }}
+        {% endif %}
+
+    </p>
+    <p>
+        Seeing this page a lot? <a href="{% url 'contact' %}">Contact Us</a>
+    </p>
+{% endblock error_message %}

@@ -1,0 +1,69 @@
+AWSTemplateFormatVersion: '2010-09-09'
+Parameters:
+    DatabaseSecurityGroup:
+        Description: Sets the security group to use for RDS database access
+        Type: AWS::EC2::SecurityGroup::Id
+
+    PrivateSubnet1:
+        Description: A reference to the private subnet in the 1st Availability Zone
+        Type: AWS::EC2::Subnet::Id
+
+    PrivateSubnet2:
+        Description: A reference to the private subnet in the 2nd Availability Zone
+        Type: AWS::EC2::Subnet::Id
+
+    DbUsername:
+        Description: The username to use for the database
+        Type: String
+        NoEcho: true
+
+    DbPassword:
+        Description: The password to use for the database
+        Type: String
+        NoEcho: true
+
+Resources:
+    PostgresSubnetGroup:
+        UpdateReplacePolicy: Retain
+        Type: AWS::RDS::DBSubnetGroup
+        DeletionPolicy: Retain
+        Properties:
+            DBSubnetGroupDescription: Created from the RDS Management Console
+            SubnetIds:
+                - Ref: PrivateSubnet1
+                - Ref: PrivateSubnet2
+
+    PostgresService:
+        UpdateReplacePolicy: Retain
+        Type: AWS::RDS::DBInstance
+        DeletionPolicy: Retain
+        Properties:
+            AllocatedStorage: '20'
+            AllowMajorVersionUpgrade: false
+            AutoMinorVersionUpgrade: true
+            DBInstanceClass: db.t4g.medium
+            Port: '5432'
+            PubliclyAccessible: false
+            StorageType: gp3
+            StorageEncrypted: True
+            BackupRetentionPeriod: 31
+            MasterUsername: !Ref DbUsername
+            MasterUserPassword: !Ref DbPassword
+            PreferredBackupWindow: 03:47-04:17
+            PreferredMaintenanceWindow: tue:03:14-tue:03:44
+            DBName: concordia
+            Engine: postgres
+            EngineVersion: '15.5'
+            LicenseModel: postgresql-license
+            DBSubnetGroupName:
+                Ref: PostgresSubnetGroup
+            VPCSecurityGroups:
+                - Ref: DatabaseSecurityGroup
+            Tags:
+                - Key: workload-type
+                  Value: other
+
+Outputs:
+    DatabaseHostName:
+        Description: 'Hostname for the relational database service'
+        Value: !GetAtt PostgresService.Endpoint.Address

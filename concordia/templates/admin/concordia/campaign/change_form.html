@@ -1,0 +1,47 @@
+{% extends "admin/change_form.html" %}
+
+{% load i18n admin_urls static %}
+
+{% block object-tools-items %}
+    {% if original.pk %}
+        <li>
+            <a href="{% url 'admin:concordia_campaign_export-csv' original.slug %}" class="viewsitelink">
+                Export CSV
+            </a>
+        </li>
+        <li>
+            <a href="{% url 'admin:concordia_campaign_export-bagit' original.slug %}" class="viewsitelink">
+                Export BagIt
+            </a>
+        </li>
+        <li>
+            <a href="{% url 'admin:concordia_campaign_report' original.slug %}" class="viewsitelink">
+                Report
+            </a>
+        </li>
+        {% if perms.concordia.retire_campaign and original.status != 1 %}
+            {# Hide if campaign is active #}
+            <li>
+                <a href="{% url 'admin:concordia_campaign_retire' original.slug %}" class="viewsitelink">
+                    Retire
+                </a>
+            </li>
+        {% endif %}
+        <li>
+            <a class="view-related-objects" href="{% url 'admin:concordia_project_changelist' %}?campaign__id__exact={{ original.pk }}">
+                Projects
+            </a>
+        </li>
+        <li>
+            <a class="view-related-objects" href="{% url 'admin:concordia_item_changelist' %}?project__campaign__id__exact={{ original.pk }}">
+                Items
+            </a>
+        </li>
+        <li>
+            <a class="view-related-objects" href="{% url 'admin:concordia_asset_changelist' %}?item__project__campaign__id__exact={{ original.pk }}">
+                Assets
+            </a>
+        </li>
+    {% endif %}
+    {{ block.super }}
+{% endblock %}

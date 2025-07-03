@@ -1,0 +1,88 @@
+<div id="guide-sidebar" class="sidebar offscreen" tabindex="-1">
+    <div id="title-bar" class="bg-primary px-2 py-1 row text-white">
+        <div id="guide-bars-col" class="col-1 d-none pt-2">
+            <a id="guide-bars" data-bs-target="#guide-carousel" data-bs-slide-to="0" href="" aria-label="link">
+                <i aria-hidden="true" class="fas fa-solid fa-bars ps-3 pb-2"></i>
+            </a>
+        </div>
+        <div class="col-10">
+            <h3 class="px-2 my-1 py-1">How-To Guide</h3>
+        </div>
+        <div class="col-1 pt-2">
+            <a id="close-guide">
+                <span aria-hidden="true" class="fas fa-times"></span>
+            </a>
+        </div>
+    </div>
+    <div id="guide-carousel" class="carousel carousel-fade" data-bs-interval="false">
+        <div class="carousel-inner">
+            <div class="carousel-item active" id="guide-nav">
+                <ul class="nav flex-column">
+                    <li class="nav-item toc-title">
+                        <a class="nav-link" data-bs-target="#guide-carousel" data-bs-slide-to="1" href="#" tabindex="-1">About This Campaign</a>
+                    </li>
+                    {% for guide in guides %}
+                        <li class="nav-item toc-title">
+                            <a data-bs-target="#guide-carousel" data-bs-slide-to="{{ forloop.counter|add:1 }}" class="nav-link" href="#pane-{{ forloop.counter }}" tabindex="-1">
+                                {{ guide.title }}
+                            </a>
+                        </li>
+                    {% endfor %}
+                </ul>
+            </div>
+            <div class="carousel-item container">
+                <div class="border-bottom justify-content-end mb-3 py-1 d-flex">
+                    <div class="col-7 justify-self-center me-4">
+                        <h3>About This Campaign</h3>
+                    </div>
+                    <div class="col-1 pt-2">
+                        <a class="fw-bold ms-3" id="next-guide" data-bs-target="#guide-carousel" data-bs-slide="next">></a>
+                    </div>
+                </div>
+                <div class="guide-body">
+                    {% if campaign.description %}
+                        <h4>About this campaign</h4>
+                        <p>{{ campaign.description|safe }}</p>
+                    {% endif %}
+                    {% if asset.item.project.description %}
+                        <h4>About this project</h4>
+                        <p>{{ asset.item.project.description|safe }}</p>
+                    {% endif %}
+                    {% if campaign.resource_set.related_links %}
+                        <h5 class="pt-3">Helpful Links</h5>
+                        <p>
+                            <ul>
+                                {% for resource in campaign.resource_set.related_links %}
+                                    <li class="mb-3">
+                                        <a href="{{ resource.resource_url }}" target="_blank" rel=noopener>
+                                            {{ resource.title }}{% if 'loc.gov' not in resource.resource_url %} <i class="fa fa-external-link-alt"></i>{% endif %}
+                                        </a>
+                                    </li>
+                                {% endfor %}
+                            </ul>
+                    {% endif %}
+                </div>
+            </div>
+            {% for guide in guides %}
+                <div class="carousel-item container" id="pane-{{ forloop.counter }}">
+                    <div class="border-bottom guide-header row">
+                        <div class="col-1 pt-2 prev-guide">
+                            <a class="fw-bold" id="previous-guide" data-bs-target="#guide-carousel" data-bs-slide="prev"><</a>
+                        </div>
+                        <div class="col text-center ps-2">
+                            <h3>{{ guide.title }}</h3>
+                        </div>
+                        <div class="col-1 pt-2 next-guide">
+                            {% if not forloop.last %}
+                                <a class="fw-bold" id="next-guide" data-bs-target="#guide-carousel" data-bs-slide="next">></a>
+                            {% endif %}
+                        </div>
+                    </div>
+                    <div class="guide-body">
+                        {{ guide.body|safe }}
+                    </div>
+                </div>
+            {% endfor %}
+        </div>
+    </div>
+</div>
