@@ -9,15 +9,6 @@ EMAIL_BACKEND = "django.core.mail.backends.dummy.EmailBackend"
 
 INSTALLED_APPS += ["django_opensearch_dsl"]
 
-# Override STATICFILES_FINDERS to remove npm finder that's causing crashes
-STATICFILES_FINDERS = [
-    "django.contrib.staticfiles.finders.FileSystemFinder",
-    "django.contrib.staticfiles.finders.AppDirectoriesFinder",
-]
-
-# Use simple static files storage to avoid manifest issues
-STATICFILES_STORAGE = "django.contrib.staticfiles.storage.StaticFilesStorage"
-
 # Globally disable auto-syncing
 OPENSEARCH_DSL_AUTOSYNC = os.getenv("OPENSEARCH_DSL_AUTOSYNC", False)
 
