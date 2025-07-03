@@ -78,7 +78,6 @@ services:
             - db
         volumes:
             - .:/app
-            - /app/node_modules
             - images_volume:/concordia_images
         networks:
             - default
